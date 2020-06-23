@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 from discord.ext.commands import Command
+from datetime import datetime
 from ..utils.titan import titan
 from ..utils import app_task
 from ..utils import activity_task
@@ -42,13 +43,14 @@ class CommandManager():
                 activity_task.write_online()
                 await ctx.send("Done.")
         @self.client.command()
-        async def active(ctx):
+        async def activity(ctx, limit: int=-1):
             if check_perms(ctx):
-                now = time.time()
-                with open(ACTIVE_PATH, 'r') as f:
-                    data = json.load(f)
-                sorted_data = sorted(data.items(), key=lambda k: k[1], reverse=True)
-                await ctx.send('\n'.join(member+": "+str(round((now-recorded)/86400, 3))+"days ago" for member, recorded in sorted_data))
+                bar = await ctx.send("`--------------------`")
+                activity = await activity_task.get_members_activity(bar, activity_task.get_members_uuid())
+                now = datetime.utcnow().timestamp()
+                activity = sorted(activity, key=lambda k: k[1])
+                msg = '```\n'+'\n'.join("%16s          %7s" % (i, str((now-j)/3600/24)[:5] +'d') for i, j in activity[:limit])+'\n```'
+                await bar.edit(content=msg)
 
         self.client.add_command(Command(set_channel))
         self.client.add_command(Command(force_update))
