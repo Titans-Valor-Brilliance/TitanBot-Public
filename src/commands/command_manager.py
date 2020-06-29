@@ -21,10 +21,10 @@ class CommandManager():
     def register_all(self):
         def check_perms(ctx):
             return ctx.author.id == 146483065223512064 or 703018636301828246 in [role.id for role in ctx.message.author.roles]
-        async def set_channel(ctx, channel: TextChannelConverter):
-            titan.config["appChn"] = channel.id
+        async def set_channel(ctx, chntype, channel: TextChannelConverter):
+            titan.config[chntype] = channel.id
             titan.save()
-            await ctx.send("Applications now redirecting to channel named \"{}\"".format(channel))
+            await ctx.send("Messages for {} now redirecting to channel named \"{}\"".format(channel, chntype))
         async def force_update(ctx):
             await app_task.checkforums(self.client.get_channel(titan.config["appChn"]), self.client)
         @self.client.group()

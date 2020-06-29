@@ -36,7 +36,7 @@ def attack_gain_update():
 
 async def check_territories_task(client):
     await client.wait_until_ready()
-    chn = client.get_channel(titan.config["appChn"])
+    chn = client.get_channel(titan.config["warChn"])
     while not client.is_closed():
         res = attack_gain_update()
         if res:
