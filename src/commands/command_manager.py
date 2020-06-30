@@ -36,7 +36,7 @@ class CommandManager():
         @self.client.command()
         async def online(ctx):
             if check_perms(ctx):
-                await ctx.send(activity_task.get_current_members())
+                await ctx.send(await activity_task.get_current_members())
         @self.client.command()
         async def write_online(ctx):
             if check_perms(ctx):
