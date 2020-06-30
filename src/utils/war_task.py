@@ -20,7 +20,7 @@ def attack_gain_update():
         old = json.load(f)
     c = 0
     for territory in titan.artemis["ANO"]:
-        if dat["territories"][territory]["guild"] != "Titans Valor":
+        if not dat["territories"][territory]["guild"] in {"Titans Valor", "Seekers of Arx"}:
             lost.append(territory)
             c += 1
     if c >= 3 and old["lose"] == 0: # urgent
