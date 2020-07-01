@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 from discord.ext.commands import Command
+from discord.ext.commands import has_permissions
 from datetime import datetime
 from ..utils.titan import titan
 from ..utils import app_task
@@ -11,9 +12,14 @@ import time
 
 #titan = __import__('/'.join(__file__.split("/")[:-2])+"/utils/titan").Titan()
 
+
 class TextChannelConverter(commands.TextChannelConverter):
     async def convert(self, ctx, arg):
         return await commands.TextChannelConverter.convert(self, ctx, arg)
+
+class MemberConverter(commands.MemberConverter):
+    async def convert(self, ctx, arg):
+        return await commands.MemberConverter.convert(self, ctx, arg)
 
 class CommandManager():
     def __init__(self, client: discord.Client):
@@ -27,12 +33,39 @@ class CommandManager():
             await ctx.send("Messages for {} now redirecting to channel named \"{}\"".format(channel, chntype))
         async def force_update(ctx):
             await app_task.checkforums(self.client.get_channel(titan.config["appChn"]), self.client)
+
         @self.client.group()
         async def trover(ctx):
             pass
-        @trover.command()
-        async def list(ctx):
-            return 1
+
+        @has_permissions(administrator=True)
+        @self.client.command()
+        async def roles(ctx: commands.Context, user: discord.Member, mcname):
+            await user.add_roles(*[x for x in ctx.guild.roles if x.name in titan.config["role_names"]])
+            await user.edit(nick=f"♙ Citizen {mcname}")
+            await ctx.send("Roles added to the user {}".format(user))
+
+        @has_permissions(administrator=True)
+        @self.client.command()
+        async def promote(ctx, user: discord.Member, m_or_f):
+            hier, hiermap, hiergroup = titan.config[f"hierarchy_names_{m_or_f}"], titan.config[f"hierarchy_names_{m_or_f}map"], titan.config["hierarchy_group"]
+            rank_nominal = list({x.name for x in user.roles} & set(hier))
+            oldgroup = list({x.name for x in user.roles} & set(hiergroup))
+            newrank = hier[hier.index(rank_nominal[0])+1]
+            await user.remove_roles(*[x for x in ctx.guild.roles if x.name in {oldgroup[0], rank_nominal[0]}])
+            await user.add_roles(*[x for x in ctx.guild.roles if x.name in {newrank, hiergroup[hiermap[newrank]]}])
+            name = user.name.split(" ")[-1]
+            await user.edit(nick=f"{hiergroup[hiermap[newrank]][0]} {newrank} {name}")
+            await ctx.send("Promoted user {} to {}".format(user, newrank))
+            
+        @roles.error
+        async def roles_error(ctx, error):
+            await ctx.send(error)
+
+        @promote.error
+        async def promote_error(ctx, error):
+            await ctx.send(error)
+        
         @self.client.command()
         async def online(ctx):
             if check_perms(ctx):

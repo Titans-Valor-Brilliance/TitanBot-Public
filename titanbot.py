@@ -4,6 +4,7 @@ from discord.ext import commands
 from src.commands.command_manager import CommandManager
 import asyncio
 import requests
+import os
 from bs4 import BeautifulSoup
 from src.utils.titan import titan
 from src import FORUMURL
@@ -11,7 +12,7 @@ from src.utils import app_task
 from src.utils import activity_task
 from src.utils import war_task
 
-BOT_TOKEN = ""
+BOT_TOKEN = os.getenv("BOT_TOK")
 
 client = commands.Bot(command_prefix="-")
 titan.client = client
