@@ -55,7 +55,7 @@ class CommandManager():
             await user.remove_roles(*[x for x in ctx.guild.roles if x.name in {oldgroup[0], rank_nominal[0]}])
             await user.add_roles(*[x for x in ctx.guild.roles if x.name in {newrank, hiergroup[hiermap[newrank]]}])
             name = user.nick.split(" ")[-1]
-            await user.edit(nick=f"{hiergroup[hiermap[newrank]][0]} {newrank} {user.nick}")
+            await user.edit(nick=f"{hiergroup[hiermap[newrank]][0]} {newrank} {name}")
             await ctx.send("Promoted user {} to {}".format(user, newrank))
             
         @roles.error
