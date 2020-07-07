@@ -21,7 +21,7 @@ async def on_ready():
 
 client.add_listener(on_ready)
 
-# client.loop.create_task(app_task.check_forum_task(client))
+client.loop.create_task(app_task.check_forum_task(client))
 client.loop.create_task(activity_task.write_members_task(client))
 client.loop.create_task(war_task.check_territories_task(client))
 

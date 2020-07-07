@@ -23,8 +23,8 @@ def create_embed(app, txt, pfp):
 
 
 async def checkforums(chn, client):
-    required_texts = ["In-Game Username", "Timezone", "Main class and level",
-                      "How often, and for how long", "What do you like doing in Wynncraft"]
+    required_texts = ["IGN (In-Game Username):", "Timezone", "class",
+                      "Activity", "What do you like doing in Wynncraft"]
     def get_text(post_raw):
         txt = post_raw.find(
             'blockquote', {'class': 'messageText SelectQuoteContainer ugc baseHtml'})
@@ -52,12 +52,11 @@ async def checkforums(chn, client):
         app = parse_app(txt)
         name = app[0][1]
         pfp = raw.find('img', {'width': 96, 'height': 96})['src']
-        if not raw.find('blockquote', {'class': 'quoteContainer'}) and is_application(txt) and not name in titan.config['cached_names']:
-            titan.config['cached_names'].append(name)
+        if not raw.find('blockquote', {'class': 'quoteContainer'}) and is_application(txt) and not name in titan.appcache['cached_names']:
+            titan.appcache['cached_names'].append(name)
             await chn.send(embed=create_embed(app, txt, pfp))
             posts_notq.append(txt)
-        titan.save()
-
+        titan.save_apply()
 
 async def check_forum_task(client):
     await client.wait_until_ready()
