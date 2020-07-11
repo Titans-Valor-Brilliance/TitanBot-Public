@@ -40,5 +40,5 @@ async def check_territories_task(client):
     while not client.is_closed():
         res = attack_gain_update()
         if res:
-            await chn.send(f"<PING> WE'RE UNDER HEAVY ATTACK. TERRITORIES LOST: {str(res)}")
+            await chn.send(f"<@&683785435117256939> WE'RE UNDER HEAVY ATTACK. TERRITORIES LOST: {str(res)}")
         await asyncio.sleep(titan.config["tercheck"])

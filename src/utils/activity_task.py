@@ -61,7 +61,7 @@ async def kick_players(memberlist):
     for m in old:
         if not m in memberlist:
             marked_for_del.append(m)
-            chn = titan.client.get_channel(titan.config["appChn"])
+            chn = titan.client.get_channel(titan.config["genChn"])
             await chn.send("<- %s Left" % m)
     for m in marked_for_del:
         del old[m]
@@ -69,7 +69,7 @@ async def kick_players(memberlist):
         json.dump(old, f)
 
 async def write_members():
-    chn = titan.client.get_channel(titan.config["appChn"])
+    chn = titan.client.get_channel(titan.config["genChn"])
     with open(ACTIVE_PATH, 'r') as f:
         members = set(json.load(f))
     new = get_members()

@@ -30,7 +30,7 @@ class CommandManager():
         async def set_channel(ctx, chntype, channel: TextChannelConverter):
             titan.config[chntype] = channel.id
             titan.save()
-            await ctx.send("Messages for {} now redirecting to channel named \"{}\"".format(channel, chntype))
+            await ctx.send("Messages for {} now redirecting to channel named \"{}\"".format(chntype, channel))
         async def force_update(ctx):
             await app_task.checkforums(self.client.get_channel(titan.config["appChn"]), self.client)
 
