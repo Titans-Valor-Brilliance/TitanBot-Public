@@ -94,7 +94,7 @@ class CommandManager():
                 await ctx.send(f'```\n{guild}\'s report\n------------\n'+'\n'.join("%20s  %0.2f days" % (x[0], x[1]) for x in times)+'```')
             elif date_format == "h:m":
                 for ffa_name in titan.ffas["ffas"]:
-                    hr = titan.ffas[ffa_name].get(guild,0)/60
+                    hr = titan.ffas[ffa_name].get(guild,0)/60/60
                     mins = (hr-int(hr))*60
                     times.append([ffa_name, hr, mins])
                 times = sorted(times, key=lambda x: x[1], reverse=True)
