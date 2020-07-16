@@ -25,7 +25,7 @@ def attack_gain_update():
             titan.ffas[k].update({v["guild"]: titan.ffas[k].get(v["guild"],0)+dt})
             titan.ffas[k]["latest"] = v["guild"]
         else:
-            titan.ffas[k].update({v["guild"]: titan.ffas[k].get(v["guild"],0)+titan.config["terCheck"]})
+            titan.ffas[k].update({v["guild"]: titan.ffas[k].get(v["guild"],0)+titan.config["tercheck"]})
     titan.save_ffas()
     lost = []
     with open(TCACHE_PATH, 'r') as f:
