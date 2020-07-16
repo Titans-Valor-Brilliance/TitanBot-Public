@@ -2,6 +2,7 @@ import json
 from src import CFG_PATH
 from src import ARTEMIS_PATH
 from src import APPLY_PATH
+from src import FFA_PATH
 
 titan = None
 
@@ -10,6 +11,7 @@ class Titan():
         self.config = None
         self.artemis = None
         self.appcache = None
+        self.ffas = None
         self.update()
         self.client = None
     def update(self):
@@ -19,6 +21,8 @@ class Titan():
             self.artemis = json.loads(f.read())
         with open(APPLY_PATH, 'r') as f:
             self.appcache = json.loads(f.read())
+        with open(FFA_PATH, 'r') as f:
+            self.ffas = json.loads(f.read())
     def save(self):
         with open(CFG_PATH, 'w') as f:
             json.dump(self.config, f)
@@ -26,6 +30,10 @@ class Titan():
     def save_apply(self):
         with open(APPLY_PATH, 'w') as f:
             json.dump(self.appcache, f)
+        self.update()
+    def save_ffas(self):
+        with open(FFA_PATH, 'w') as f:
+            json.dump(self.ffas, f)
         self.update()
 
 if not titan:

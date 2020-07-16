@@ -1,8 +1,10 @@
 import requests
 import json
 import asyncio
+import time
 from src.utils.titan import titan
 from src import TCACHE_PATH
+from datetime import datetime
 
 LTERURL = "https://api.wynncraft.com/public_api.php?action=territoryList"
 
@@ -15,6 +17,12 @@ def write_territories(dat):
 
 def attack_gain_update():
     dat = requests.get(LTERURL).json()
+    for k, v in dat["territories"].items():
+        now = datetime.utcnow()
+        captured = datetime.strptime(v["acquired"], "%Y-%m-%d %H:%M:%S")
+        dt = (now-captured).total_seconds()
+        titan.ffas[k].update({v["guild"]: titan.ffas[k].get(v["guild"],0)+dt})
+    titan.save_ffas()
     lost = []
     with open(TCACHE_PATH, 'r') as f:
         old = json.load(f)

@@ -84,6 +84,13 @@ class CommandManager():
                 activity = sorted(activity, key=lambda k: k[1])
                 msg = '```\n'+'\n'.join("%16s          %7s" % (i, str((now-j)/3600/24)[:5] +'d') for i, j in activity[:limit])+'\n```'
                 await bar.edit(content=msg)
+        @self.client.command()
+        async def ffa(ctx, guild):
+            times = []
+            for ffa_name in titan.ffas["ffas"]:
+                times.append([ffa_name, titan.ffas[ffa_name].get(guild,0)/60/60/24])
+            times = sorted(times, key=lambda x: x[1], reverse=True)
+            await ctx.send(f'```\n{guild}\'s report\n------------\n'+'\n'.join("%20s  %0.2f days" % (x[0], x[1]) for x in times)+'```')
 
         self.client.add_command(Command(set_channel))
         self.client.add_command(Command(force_update))
