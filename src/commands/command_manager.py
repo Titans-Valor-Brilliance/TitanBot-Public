@@ -93,8 +93,9 @@ class CommandManager():
             await ctx.send(f'```\n{guild}\'s report\n------------\n'+'\n'.join("%20s  %0.2f days" % (x[0], x[1]) for x in times)+'```')
         @self.client.command()
         async def ffa_clear(ctx):
-            for key in [*titan.ffas.keys()][1:]:
-                titan.ffas.update({key:{}})
+            for key in titan.ffas.keys():
+                if key != "ffas":
+                    titan.ffas.update({key:{}})
             titan.save_ffas()
             await ctx.send("Cleared FFA History")
         self.client.add_command(Command(set_channel))
