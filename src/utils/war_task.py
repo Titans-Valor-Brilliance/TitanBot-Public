@@ -19,7 +19,7 @@ def attack_gain_update():
     dat = requests.get(LTERURL).json()
     for k, v in dat["territories"].items():
         now = datetime.utcnow().timestamp()
-        if v["guild"] != titan.ffas[k]["latest"][0]:
+        if v["guild"] != titan.ffas[k]["latest"]:
             captured = datetime.strptime(v["acquired"], "%Y-%m-%d %H:%M:%S").timestamp()
             dt = now-captured
             titan.ffas[k].update({v["guild"]: titan.ffas[k].get(v["guild"],0)+dt})
