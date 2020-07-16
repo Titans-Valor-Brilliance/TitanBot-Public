@@ -85,17 +85,28 @@ class CommandManager():
                 msg = '```\n'+'\n'.join("%16s          %7s" % (i, str((now-j)/3600/24)[:5] +'d') for i, j in activity[:limit])+'\n```'
                 await bar.edit(content=msg)
         @self.client.command()
-        async def ffa(ctx, guild):
+        async def ffa(ctx, guild, date_format):
             times = []
-            for ffa_name in titan.ffas["ffas"]:
-                times.append([ffa_name, titan.ffas[ffa_name].get(guild,0)/60/60/24])
+            if date_format == "days":
+                for ffa_name in titan.ffas["ffas"]:
+                    times.append([ffa_name, titan.ffas[ffa_name].get(guild,0)/60/60/24])
+                await ctx.send(f'```\n{guild}\'s report\n------------\n'+'\n'.join("%20s  %0.2f days" % (x[0], x[1]) for x in times)+'```')
+            elif date_format == "h:m":
+                for ffa_name in titan.ffas["ffas"]:
+                    hr = titan.ffas[ffa_name].get(guild,0)/60
+                    mins = (hr-int(hr))*60
+                    times.append([ffa_name, hr, mins])
+                await ctx.send(f'```\n{guild}\'s report\n------------\n'+'\n'.join("%20s  %d:%d" % (x[0], x[1], x[2]) for x in times)+'```')
+
             times = sorted(times, key=lambda x: x[1], reverse=True)
-            await ctx.send(f'```\n{guild}\'s report\n------------\n'+'\n'.join("%20s  %0.2f days" % (x[0], x[1]) for x in times)+'```')
+        @ffa.error
+        async def ffa_error(ctx, error):
+            await ctx.send(error)
         @self.client.command()
         async def ffa_clear(ctx):
             for key in titan.ffas.keys():
                 if key != "ffas":
-                    titan.ffas.update({key:{}})
+                    titan.ffas.update({key:{"latest":""}})
             titan.save_ffas()
             await ctx.send("Cleared FFA History")
         self.client.add_command(Command(set_channel))

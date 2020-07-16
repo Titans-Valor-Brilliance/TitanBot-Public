@@ -19,9 +19,13 @@ def attack_gain_update():
     dat = requests.get(LTERURL).json()
     for k, v in dat["territories"].items():
         now = datetime.utcnow().timestamp()
-        captured = datetime.strptime(v["acquired"], "%Y-%m-%d %H:%M:%S").timestamp()
-        dt = now-captured
-        titan.ffas[k].update({v["guild"]: titan.ffas[k].get(v["guild"],0)+dt})
+        if v["guild"] != titan.ffas[k]["latest"][0]:
+            captured = datetime.strptime(v["acquired"], "%Y-%m-%d %H:%M:%S").timestamp()
+            dt = now-captured
+            titan.ffas[k].update({v["guild"]: titan.ffas[k].get(v["guild"],0)+dt})
+            titan.ffas[k]["latest"] = v["guild"]
+        else:
+            titan.ffas[k].update({v["guild"]: titan.ffas[k].get(v["guild"],0)+titan.configs["terCheck"]})
     titan.save_ffas()
     lost = []
     with open(TCACHE_PATH, 'r') as f:
