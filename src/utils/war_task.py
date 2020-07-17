@@ -17,15 +17,21 @@ def write_territories(dat):
 
 def attack_gain_update():
     dat = requests.get(LTERURL).json()
-    for k, v in dat["territories"].items():
-        now = datetime.utcnow().timestamp()
-        if v["guild"] != titan.ffas[k]["latest"]:
-            captured = datetime.strptime(v["acquired"], "%Y-%m-%d %H:%M:%S").timestamp()
-            dt = now-captured
-            titan.ffas[k].update({v["guild"]: titan.ffas[k].get(v["guild"],0)+dt})
-            titan.ffas[k]["latest"] = v["guild"]
-        else:
-            titan.ffas[k].update({v["guild"]: titan.ffas[k].get(v["guild"],0)+titan.config["tercheck"]})
+    nowhours = time.strftime("%H:%M").split(":")
+    if int(nowhours[0]) == 0 and 0 < int(nowhours[1]) < 10:
+        for key in titan.ffas.keys():
+            if key != "ffas":
+                titan.ffas.update({key:{"latest":""}})
+    else:
+        for k, v in dat["territories"].items():
+            now = datetime.utcnow().timestamp()
+            if v["guild"] != titan.ffas[k]["latest"]:
+                captured = datetime.strptime(v["acquired"], "%Y-%m-%d %H:%M:%S").timestamp()
+                dt = now-captured
+                titan.ffas[k].update({v["guild"]: titan.ffas[k].get(v["guild"],0)+dt})
+                titan.ffas[k]["latest"] = v["guild"]
+            else:
+                titan.ffas[k].update({v["guild"]: titan.ffas[k].get(v["guild"],0)+titan.config["tercheck"]})
     titan.save_ffas()
     lost = []
     with open(TCACHE_PATH, 'r') as f:
