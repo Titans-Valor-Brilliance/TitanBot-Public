@@ -7,6 +7,7 @@ from src import TCACHE_PATH
 from datetime import datetime
 
 LTERURL = "https://api.wynncraft.com/public_api.php?action=territoryList"
+LEADURL= "https://api.wynncraft.com/public_api.php?action=statsLeaderboard&type=guild&timeframe=alltime"
 
 def write_territories(dat):
     with open(TCACHE_PATH, 'r') as f:
@@ -18,7 +19,16 @@ def write_territories(dat):
 def attack_gain_update():
     dat = requests.get(LTERURL).json()
     nowhours = time.strftime("%H:%M").split(":")
-    if int(nowhours[0]) == 0 and 0 < int(nowhours[1]) < 10:
+    if int(nowhours[1]) < 5:
+        # Also do leaderboard tracking
+        leaderboard = requests.get(LEADURL).json()
+        new_data = {}
+        for guild in leaderboard["data"]:
+            new_data.update({guild["name"]: guild["xp"]})
+        titan.lead["last"].pop(0)
+        titan.lead["last"].append(new_data)
+        titan.save_lead()
+    if int(nowhours[0]) == 0 and 0 < int(nowhours[1]) < 5:
         for key in titan.ffas.keys():
             if key != "ffas":
                 titan.ffas.update({key:{"latest":""}})

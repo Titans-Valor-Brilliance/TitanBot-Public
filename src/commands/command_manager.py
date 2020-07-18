@@ -7,11 +7,13 @@ from ..utils.titan import titan
 from ..utils import app_task
 from ..utils import activity_task
 from src import ACTIVE_PATH
+import requests
 import json
 import time
 
 #titan = __import__('/'.join(__file__.split("/")[:-2])+"/utils/titan").Titan()
 
+LEADURL= "https://api.wynncraft.com/public_api.php?action=statsLeaderboard&type=guild&timeframe=alltime"
 
 class TextChannelConverter(commands.TextChannelConverter):
     async def convert(self, ctx, arg):
@@ -98,11 +100,12 @@ class CommandManager():
                     mins = (hr-int(hr))*60
                     times.append([ffa_name, hr, mins])
                 times = sorted(times, key=lambda x: x[1], reverse=True)
-                await ctx.send(f'```\n{guild}\'s report\n------------\n'+'\n'.join("%20s  %d:%d" % (x[0], x[1], x[2]) for x in times)+'```')
+                await ctx.send(f'```\n{guild}\'s report\n------------\n'+'\n'.join("%20s  %d:%02d" % (x[0], x[1], x[2]) for x in times)+'```')
 
         @ffa.error
         async def ffa_error(ctx, error):
             await ctx.send(error)
+
         @self.client.command()
         async def ffa_clear(ctx):
             for key in titan.ffas.keys():
@@ -110,6 +113,26 @@ class CommandManager():
                     titan.ffas.update({key:{"latest":""}})
             titan.save_ffas()
             await ctx.send("Cleared FFA History")
+
+        @self.client.command()
+        async def xp(ctx, hours=24, length=10):
+            if hours < 1 or hours > 24:
+                return await ctx.send("Please specify a time between 1 and 24 hours")
+            leaderboard = requests.get(LEADURL).json()
+            send = {}
+            stored_data = titan.lead["last"][24-hours]
+            for guild in leaderboard["data"]:
+                exists = stored_data.get(guild["name"])
+                if not exists:
+                    continue
+                send.update({guild["name"]:guild["xp"]-exists})
+            data = sorted(send.items(), key=lambda x: x[1], reverse=True)[:length]
+            
+            await ctx.send('```Guild XP Gain In the Last %d Hour(s) Report\n%s```' % (hours, '\n'.join("%20s   %12d" % x for x in data)))
+
+        @xp.error
+        async def xp_error(ctx, error):
+            await ctx.send(error)
         self.client.add_command(Command(set_channel))
         self.client.add_command(Command(force_update))
     
