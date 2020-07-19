@@ -35,13 +35,8 @@ def attack_gain_update():
     else:
         for k, v in dat["territories"].items():
             now = datetime.utcnow().timestamp()
-            if v["guild"] != titan.ffas[k]["latest"]:
-                captured = datetime.strptime(v["acquired"], "%Y-%m-%d %H:%M:%S").timestamp()
-                dt = now-captured
-                titan.ffas[k].update({v["guild"]: titan.ffas[k].get(v["guild"],0)+dt})
-                titan.ffas[k]["latest"] = v["guild"]
-            else:
-                titan.ffas[k].update({v["guild"]: titan.ffas[k].get(v["guild"],0)+titan.config["tercheck"]})
+
+            titan.ffas[k].update({v["guild"]: titan.ffas[k].get(v["guild"],0)+titan.config["tercheck"]})
     titan.save_ffas()
     lost = []
     with open(TCACHE_PATH, 'r') as f:
