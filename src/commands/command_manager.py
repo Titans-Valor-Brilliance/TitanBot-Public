@@ -36,6 +36,7 @@ class CommandManager():
         async def force_update(ctx):
             await app_task.checkforums(self.client.get_channel(titan.config["appChn"]), self.client)
 
+        @commands.has_role("Trover")
         @self.client.group()
         async def trover(ctx):
             if not ctx.invoked_subcommand:
@@ -52,6 +53,10 @@ class CommandManager():
             await ctx.send("{} has been taken off the borrow-list after returning the {}".format(player, titan.trovers["lend"][str(player.id)]))
             del titan.trovers["lend"][str(player.id)]
             titan.save_trovers()
+        
+        @trover.error()
+        async def trover_error(ctx, error):
+            await ctx.send(error)
 
         @has_permissions(administrator=True)
         @self.client.command()
@@ -99,6 +104,8 @@ class CommandManager():
                 activity = sorted(activity, key=lambda k: k[1])
                 msg = '```\n'+'\n'.join("%16s          %7s" % (i, str((now-j)/3600/24)[:5] +'d') for i, j in activity[:limit])+'\n```'
                 await bar.edit(content=msg)
+        
+        @commands.has_any_role("Titanbot GL", "Titans Brilliance", "Military")
         @self.client.command()
         async def ffa(ctx, guild, date_format):
             times = []
@@ -119,6 +126,7 @@ class CommandManager():
         async def ffa_error(ctx, error):
             await ctx.send(error)
 
+        @commands.has_any_role("Titanbot GL", "Titans Brilliance", "Military")
         @self.client.command()
         async def ffa_clear(ctx):
             for key in titan.ffas.keys():
@@ -127,6 +135,7 @@ class CommandManager():
             titan.save_ffas()
             await ctx.send("Cleared FFA History")
 
+        @commands.has_any_role("Titanbot GL", "Titans Brilliance", "Military")
         @self.client.command()
         async def xp(ctx, hours=24, length=10):
             if hours < 1 or hours > 24:
