@@ -54,7 +54,7 @@ class CommandManager():
             del titan.trovers["lend"][str(player.id)]
             titan.save_trovers()
         
-        @trover.error()
+        @trover.error
         async def trover_error(ctx, error):
             await ctx.send(error)
 
