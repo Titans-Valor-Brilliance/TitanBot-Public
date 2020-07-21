@@ -21,6 +21,12 @@ async def on_ready():
 
 client.add_listener(on_ready)
 
+async def on_message(msg: discord.Message):
+    if msg.channel.id == titan.config["inaChn"]:
+        chn: discord.TextChannel = client.get_channel(titan.config["trvChn"])
+        await chn.send("<&734958898938904586> {} is on inactivity leave and has borrowed a {}. Once they return the item, others will be able to use".format(msg.author, titan.trovers["lend"][str(msg.author.id)]))
+client.add_listener(on_message)
+
 client.loop.create_task(app_task.check_forum_task(client))
 client.loop.create_task(activity_task.write_members_task(client))
 client.loop.create_task(war_task.check_territories_task(client))

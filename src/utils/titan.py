@@ -4,6 +4,7 @@ from src import ARTEMIS_PATH
 from src import APPLY_PATH
 from src import FFA_PATH
 from src import LEADCACH_PATH
+from src import TROV_PATH
 
 titan = None
 
@@ -14,8 +15,10 @@ class Titan():
         self.appcache = None
         self.ffas = None
         self.lead = None
+        self.trovers = None
         self.update()
         self.client = None
+    # Yes, I know this is boilerplate and a loop across the path constants will do. I need it to be clear during testing.
     def update(self):
         with open(CFG_PATH, 'r') as f:
             self.config = json.loads(f.read())
@@ -27,6 +30,8 @@ class Titan():
             self.ffas = json.loads(f.read())
         with open(LEADCACH_PATH, 'r') as f:
             self.lead = json.loads(f.read())
+        with open(TROV_PATH, 'r') as f:
+            self.trovers = json.loads(f.read())
     def save(self):
         with open(CFG_PATH, 'w') as f:
             json.dump(self.config, f)
@@ -42,6 +47,10 @@ class Titan():
     def save_lead(self):
         with open(LEADCACH_PATH, 'w') as f:
             json.dump(self.lead, f)
+        self.update()
+    def save_trovers(self):
+        with open(TROV_PATH, 'w') as f:
+            json.dump(self.trovers, f)
         self.update()
 if not titan:
     titan = Titan()

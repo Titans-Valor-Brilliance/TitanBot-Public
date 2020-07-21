@@ -38,7 +38,20 @@ class CommandManager():
 
         @self.client.group()
         async def trover(ctx):
-            pass
+            if not ctx.invoked_subcommand:
+                await ctx.send("This is the Trovers command (Subcommands are available, this command does nothing)")
+        
+        @trover.command()
+        async def lend(ctx, player: discord.User, item: str):
+            titan.trovers["lend"].update({player.id: item})
+            titan.save_trovers()
+            await ctx.send("{} has been lent a(n) {}".format(player, item))
+
+        @trover.command()
+        async def returned(ctx, player: discord.User):
+            await ctx.send("{} has been taken off the borrow-list after returning the {}".format(player, titan.trovers["lend"][str(player.id)]))
+            del titan.trovers["lend"][str(player.id)]
+            titan.save_trovers()
 
         @has_permissions(administrator=True)
         @self.client.command()
@@ -133,6 +146,8 @@ class CommandManager():
         @xp.error
         async def xp_error(ctx, error):
             await ctx.send(error)
+
+        
         self.client.add_command(Command(set_channel))
         self.client.add_command(Command(force_update))
     

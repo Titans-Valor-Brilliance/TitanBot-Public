@@ -54,9 +54,10 @@ async def checkforums(chn, client):
         pfp = raw.find('img', {'width': 96, 'height': 96})['src']
         if not raw.find('blockquote', {'class': 'quoteContainer'}) and is_application(txt) and not name in titan.appcache['cached_names']:
             titan.appcache['cached_names'].append(name)
+            titan.save_apply()
             await chn.send(embed=create_embed(app, txt, pfp))
             posts_notq.append(txt)
-        titan.save_apply()
+        
 
 async def check_forum_task(client):
     await client.wait_until_ready()
