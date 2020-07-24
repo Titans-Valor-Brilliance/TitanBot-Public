@@ -89,7 +89,8 @@ class CommandManager():
         @self.client.command()
         async def online(ctx):
             if check_perms(ctx):
-                await ctx.send(' '.join(await activity_task.get_current_members()))
+                membs = await activity_task.get_current_members()
+                await ctx.send(f'```{len(membs)}\n'+'\n'.join(membs)+'```')
         @self.client.command()
         async def write_online(ctx):
             if check_perms(ctx):
