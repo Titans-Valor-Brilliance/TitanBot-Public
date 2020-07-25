@@ -157,6 +157,7 @@ class CommandManager():
         async def xp_error(ctx, error):
             await ctx.send(error)
 
+        @commands.has_rle("Survival")
         @self.client.command()
         async def survival(ctx):
             r = requests.get("https://api.mcsrvstat.us/2/23.83.91.3:25428").json()
