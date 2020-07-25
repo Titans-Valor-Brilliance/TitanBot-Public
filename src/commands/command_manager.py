@@ -157,6 +157,12 @@ class CommandManager():
         async def xp_error(ctx, error):
             await ctx.send(error)
 
+        @self.client.command()
+        async def survival(ctx):
+            r = requests.get("https://mcapi.us/server/status?ip=23.83.91.3&port=25428").json()
+            if r["online"]:
+                return await ctx.send("Server Online.\n{} Players online".format(r["players"]["now"]))
+            await ctx.send("The server is offline")
         
         self.client.add_command(Command(set_channel))
         self.client.add_command(Command(force_update))
