@@ -2,8 +2,11 @@ import json
 import requests
 from src.utils.titan import titan
 import asyncio
+import aiohttp
 import discord
 import time
+import reqcache
+import re
 from datetime import datetime
 from src import ACTIVE_PATH
 
@@ -19,20 +22,24 @@ def get_members_uuid() -> list: # gets both
     data = requests.get(GUILD).json()
     return [(m["name"], m["uuid"]) for m in data["members"]]
 
-async def get_members_activity(msg: discord.Message, members: list) -> list: # the msg is needed to update progress bar
-    d = []
+async def get_members_activity(msg: discord.Message, members: list, limit) -> list: # the msg is needed to update progress bar
     total = len(members)
+    sess = aiohttp.ClientSession()
+    tasks = []
+    for name, uuid in members[:limit]:
+        tasks.append(asyncio.create_task(reqcache.aget(MEMBERURL.format(uuid), sess)))
+    d = await asyncio.gather(*tasks)
+    g = []
     i = 0
-    for name, uuid in members:
-        req = requests.get(MEMBERURL.format(uuid)).json()
-        if len(req["data"]) > 0 and not req["data"][0]["meta"]["location"]["online"]:
-            tstamp = datetime.timestamp(datetime.strptime(req["data"][0]["meta"]["lastJoin"], "%Y-%m-%dT%H:%M:%S.%fZ"))
-            d.append((name, tstamp))
+    while i < len(d):
+        online = bool(re.search("online\":.+?,",d[i])[0][9:-1])
+        if online:
+            name = re.search("username\":.+?,",d[i])[0][11:-2]
+            tstamp = datetime.timestamp(datetime.strptime(re.search("lastJoin\":.+?,",d[i])[0][11:-2], "%Y-%m-%dT%H:%M:%S.%fZ"))
+            g.append((name, tstamp))
         i += 1
-        if i % 10 == 0:
-            # print(i/total*20, '='*int(i/total*20)+'-'*int(20-i/total*20))
-            await msg.edit(content='`'+'='*int(i/total*20)+'-'*int(20-i/total*20)+'`')
-    return d
+    await sess.close()
+    return g
 
 def get_online() -> set:
     data = requests.get(URL).json()
