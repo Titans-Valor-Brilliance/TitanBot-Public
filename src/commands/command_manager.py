@@ -161,7 +161,7 @@ class CommandManager():
         async def survival(ctx):
             r = requests.get("https://api.mcsrvstat.us/2/136.243.138.207:25569").json()
             if r["online"]:
-                return await ctx.send("Server Online. Online: \n{}".format('\n'.join(x for x in r["players"]["list"])))
+                return await ctx.send("```Server Online. Online: \n{}```".format('\n'.join(x for x in r["players"]["list"])))
             await ctx.send("The server is offline")
         
         self.client.add_command(Command(set_channel))
