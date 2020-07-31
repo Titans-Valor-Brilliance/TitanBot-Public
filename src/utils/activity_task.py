@@ -22,17 +22,20 @@ def get_members_uuid() -> list: # gets both
     data = requests.get(GUILD).json()
     return [(m["name"], m["uuid"]) for m in data["members"]]
 
-async def get_members_activity(msg: discord.Message, members: list, limit) -> list: # the msg is needed to update progress bar
+async def get_members_activity(msg: discord.Message, members: list) -> list: # the msg is needed to update progress bar
     total = len(members)
     sess = aiohttp.ClientSession()
     tasks = []
-    for name, uuid in members[:limit]:
+    for name, uuid in members:
         tasks.append(asyncio.create_task(reqcache.aget(MEMBERURL.format(uuid), sess)))
     d = await asyncio.gather(*tasks)
     g = []
     i = 0
     while i < len(d):
-        online = bool(re.search("online\":.+?,",d[i])[0][9:-1])
+        try:
+            online = bool(re.search("online\":.+?,",d[i])[0][9:-1])
+        except:
+            print(d[i])
         if online:
             name = re.search("username\":.+?,",d[i])[0][11:-2]
             tstamp = datetime.timestamp(datetime.strptime(re.search("lastJoin\":.+?,",d[i])[0][11:-2], "%Y-%m-%dT%H:%M:%S.%fZ"))

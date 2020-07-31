@@ -96,10 +96,10 @@ class CommandManager():
                 activity_task.write_online()
                 await ctx.send("Done.")
         @self.client.command()
-        async def activity(ctx, limit: int=20):
+        async def activity(ctx, limit: int = 20):
             if check_perms(ctx):
                 bar = await ctx.send("`-Progress bar will slow down the process by 400% \so it's not getting displayed anymore.-`")
-                activity = await activity_task.get_members_activity(bar, activity_task.get_members_uuid(), limit)
+                activity = await activity_task.get_members_activity(bar, activity_task.get_members_uuid())
                 now = datetime.utcnow().timestamp()
                 activity = sorted(activity, key=lambda k: k[1])
                 msg = '```\n'+'\n'.join("%16s          %7s" % (i, str((now-j)/3600/24)[:5] +'d') for i, j in activity[:limit])+'\n```'
