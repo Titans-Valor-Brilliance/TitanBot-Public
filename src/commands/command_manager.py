@@ -161,6 +161,8 @@ class CommandManager():
         async def survival(ctx):
             r = requests.get("https://api.mcsrvstat.us/2/136.243.138.207:25569").json()
             if r["online"]:
+                if not r["players"].get("list"):
+                    return await ctx.send("```Server Online. No one on.```")
                 return await ctx.send("```Server Online. Online: \n{}```".format('\n'.join(x for x in r["players"]["list"])))
             await ctx.send("The server is offline")
         
