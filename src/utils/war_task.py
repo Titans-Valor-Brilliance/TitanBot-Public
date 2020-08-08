@@ -28,7 +28,8 @@ def attack_gain_update():
         titan.lead["last"].pop(0)
         titan.lead["last"].append(new_data)
         titan.save_lead()
-    if int(nowhours[0]) == 0 and 0 < int(nowhours[1]) < 5:
+    # UTC IS 4 HOURS AHEAD OF EST :I
+    if int(nowhours[0]) == 4 and 0 < int(nowhours[1]) < 5:
         for key in titan.ffas.keys():
             if key != "ffas":
                 titan.ffas.update({key:{"latest":""}})
