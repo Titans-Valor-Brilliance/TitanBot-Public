@@ -179,6 +179,7 @@ class CommandManager():
                 return await ctx.send("```Server Online. Online: \n{}```".format('\n'.join(x for x in r["players"]["list"])))
             await ctx.send("The server is offline")
         # ADD HAS ROLE CHECK
+        @commands.has_permissions(administrator=True)
         @self.client.command()
         async def create_ticket_message(ctx):
             e = discord.Embed(title="React to submit an application!")
@@ -190,10 +191,7 @@ class CommandManager():
         # ADD HAS ROLE CHECK
         @self.client.command()
         async def debug(ctx):
-            print(ctx.message.guild.get_role(702991927318020138))
-            if not check_perms(ctx):
-                return
-            await self.client.get_channel(741808000892797010).delete()
+            pass
 
         self.client.add_command(Command(set_channel))
         self.client.add_command(Command(force_update))
