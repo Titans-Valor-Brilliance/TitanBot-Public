@@ -29,10 +29,23 @@ class CommandManager():
     def register_all(self):
         def check_perms(ctx):
             return ctx.author.id == 146483065223512064 or 703018636301828246 in [role.id for role in ctx.message.author.roles]
+        
         async def set_channel(ctx, chntype, channel: TextChannelConverter):
+            if not check_perms(ctx):
+                return await ctx.send("This command is what's known as 'Don't touch it or things will blow up'")
             titan.config[chntype] = channel.id
             titan.save()
             await ctx.send("Messages for {} now redirecting to channel named \"{}\"".format(chntype, channel))
+        
+        # Generic set_channel
+        @self.client.command()
+        async def set_cfg(ctx, ctype, value):
+            if not check_perms(ctx):
+                return await ctx.send("This command is what's known as 'Don't touch it or things will blow up'")
+            titan.config[ctype] = value
+            titan.save()
+            await ctx.send("{} -> \"{}\"".format(ctype, value))
+
         async def force_update(ctx):
             await app_task.checkforums(self.client.get_channel(titan.config["appChn"]), self.client)
 
@@ -165,7 +178,23 @@ class CommandManager():
                     return await ctx.send("```Server Online. No one on.```")
                 return await ctx.send("```Server Online. Online: \n{}```".format('\n'.join(x for x in r["players"]["list"])))
             await ctx.send("The server is offline")
-        
+        # ADD HAS ROLE CHECK
+        @self.client.command()
+        async def create_ticket_message(ctx):
+            e = discord.Embed(title="React to submit an application!")
+            e.description = "React to his message (click the ticket)"
+            msg = await ctx.send(embed=e)
+            titan.config["appMsg"] = msg.id
+            titan.save()
+            await msg.add_reaction("🎟️")
+        # ADD HAS ROLE CHECK
+        @self.client.command()
+        async def debug(ctx):
+            print(ctx.message.guild.get_role(702991927318020138))
+            if not check_perms(ctx):
+                return
+            await self.client.get_channel(741808000892797010).delete()
+
         self.client.add_command(Command(set_channel))
         self.client.add_command(Command(force_update))
     
