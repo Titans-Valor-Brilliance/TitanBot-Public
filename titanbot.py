@@ -27,6 +27,7 @@ async def on_message(msg: discord.Message):
         await chn.send("<&734958898938904586> {} is on inactivity leave and has borrowed a {}. Once they return the item, others will be able to use".format(msg.author, titan.trovers["lend"][str(msg.author.id)]))
 
 async def on_raw_reaction_add(p: discord.RawReactionActionEvent):
+    return 
     # print(rxn.message.id)
     rxn, usr = await client.get_channel(p.channel_id).fetch_message(p.message_id), client.get_user(p.user_id)
     # this is to prevent them from spam creating channels
