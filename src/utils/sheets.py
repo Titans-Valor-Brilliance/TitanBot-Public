@@ -32,7 +32,7 @@ async def new_capt_apps(chn, client: discord.client):
     }
     r = requests.post(data=payload, url=url).json()
     access = r["access_token"]
-    a = requests.get(url="https://sheets.googleapis.com/v4/spreadsheets/1xptBPOJ0F8M3geEtgX2ZYW7EG9MrR1OzJnwUiZV8Xzg/values/A1:Z1000", headers={"Authorization": "Bearer "+access}).json()
+    a = requests.get(url="https://sheets.googleapis.com/v4/spreadsheets/1BbIGUCzfq3Jb0u7TgWh_XYIpvapRAlgSVSNJxeO650g/values/A1:Z1000", headers={"Authorization": "Bearer "+access}).json()
     new = []
     for row in a["values"][1:]:
         ign = row[1]
