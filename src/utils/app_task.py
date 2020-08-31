@@ -5,6 +5,7 @@ import requests
 from bs4 import BeautifulSoup
 from discord import Embed
 import datetime
+from src.utils import sheets
 
 
 def parse_app(text):
@@ -62,8 +63,9 @@ async def checkforums(chn, client):
 async def check_forum_task(client):
     await client.wait_until_ready()
     chn = client.get_channel(titan.config["appChn"])
+    capt_chn = client.get_channel(titan.config["capChn"])
     while not client.is_closed():
 
         await checkforums(chn, client)
-
+        await sheets.new_capt_apps(capt_chn, client)
         await asyncio.sleep(titan.config["appcheck"])
