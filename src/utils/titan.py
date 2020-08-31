@@ -5,6 +5,7 @@ from src import APPLY_PATH
 from src import FFA_PATH
 from src import LEADCACH_PATH
 from src import TROV_PATH
+from src import SHEETAUTH_PATH
 
 titan = None
 
@@ -16,6 +17,7 @@ class Titan():
         self.ffas = None
         self.lead = None
         self.trovers = None
+        self.cred = None
         self.update()
         self.client = None
     # Yes, I know this is boilerplate and a loop across the path constants will do. I need it to be clear during testing.
@@ -32,6 +34,8 @@ class Titan():
             self.lead = json.loads(f.read())
         with open(TROV_PATH, 'r') as f:
             self.trovers = json.loads(f.read())
+        with open(SHEETAUTH_PATH, 'r') as f:
+            self.cred = json.loads(f.read())
     def save(self):
         with open(CFG_PATH, 'w') as f:
             json.dump(self.config, f)

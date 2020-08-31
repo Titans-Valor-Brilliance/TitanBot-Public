@@ -6,6 +6,7 @@ from datetime import datetime
 from ..utils.titan import titan
 from ..utils import app_task
 from ..utils import activity_task
+from ..utils import sheets
 from src import ACTIVE_PATH
 import requests
 import json
@@ -191,7 +192,7 @@ class CommandManager():
         # ADD HAS ROLE CHECK
         @self.client.command()
         async def debug(ctx):
-            pass
+            sheets.new_capt_apps()
 
         self.client.add_command(Command(set_channel))
         self.client.add_command(Command(force_update))
