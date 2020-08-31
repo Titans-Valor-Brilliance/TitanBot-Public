@@ -11,8 +11,12 @@ def create_embed(row):
     # embed.timestamp = datetime.datetime.utcnow()
     # embed.author = app[0][1]
     embed.description = '\n'.join("**"+questions[x][:50]+":\n**"+row[x][:50] for x in range(1, len(questions)))
-    id = requests.get(f"https://api.mojang.com/users/profiles/minecraft/{row[1]}").json()["id"]
-    embed.set_thumbnail(url=f"https://crafatar.com/renders/body/{id}")
+    pid = "toxicgg"
+    try:
+        pid = requests.get(f"https://api.mojang.com/users/profiles/minecraft/{row[1]}").json()["id"]
+    except:
+        pass
+    embed.set_thumbnail(url=f"https://crafatar.com/renders/body/{pid}")
     embed.timestamp = datetime.strptime(row[0], "%m/%d/%Y %X")
     return embed
 
