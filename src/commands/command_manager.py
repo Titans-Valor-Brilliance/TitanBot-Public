@@ -170,7 +170,7 @@ class CommandManager():
         async def xp_error(ctx, error):
             await ctx.send(error)
 
-        @commands.has_role("Military")
+        @commands.has_any_role("\u265cHigh Nobility", "\u265eNobility", "\u2658Minor Nobility", "♛ HM Parliament")
         @self.client.command()
         async def lockwarning(ctx, duration: int):
             titan.warning_timeout = time.time() + duration*60
