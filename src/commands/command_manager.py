@@ -175,6 +175,12 @@ class CommandManager():
         async def lockwarning(ctx, duration: int):
             titan.warning_timeout = time.time() + duration*60
             await ctx.send(f"Locked territory warnings for {duration} minutes!")
+        
+        @commands.has_any_role("\u265cHigh Nobility", "\u265eNobility", "\u2658Minor Nobility", "♛ HM Parliament")
+        @self.client.command()
+        async def clear_lock(ctx):
+            titan.warning_timeout = 0
+            await ctx.send("Cleared Warning Lock. Warning pings will now be sent again.")
 
         @commands.has_role("Survival")
         @self.client.command()
