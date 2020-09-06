@@ -171,6 +171,7 @@ class CommandManager():
             await ctx.send(error)
 
         @commands.has_role("Military")
+        @self.client.command()
         async def lockwarning(ctx, duration: int):
             titan.warning_timeout = time.time() + duration*60
             await ctx.send(f"Locked territory warnings for {duration} minutes!")
