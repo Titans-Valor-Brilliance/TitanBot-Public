@@ -63,7 +63,7 @@ async def check_territories_task(client):
     chn = client.get_channel(titan.config["warChn"])
     while not client.is_closed():
         res = attack_gain_update()
-        if titan.config["tercheck"] > (time.time() - titan.warning_timeout) > 0:
+        if titan.config["tercheck"]+10 > (time.time() - titan.warning_timeout) > 0:
             await chn.send("Warning Lock duration expired. Invasion warnings will be sent again")
         if res and time.time() > titan.warning_timeout:
             await chn.send(f"<@&683785435117256939> WE'RE UNDER HEAVY ATTACK. TERRITORIES LOST: {str(res)}")
