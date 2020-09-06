@@ -20,6 +20,8 @@ class Titan():
         self.cred = None
         self.update()
         self.client = None
+
+        self.warning_timeout = 0
     # Yes, I know this is boilerplate and a loop across the path constants will do. I need it to be clear during testing.
     def update(self):
         with open(CFG_PATH, 'r') as f:
